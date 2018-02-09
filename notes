@@ -5,3 +5,6 @@ Create chatbot
 		- install dependencies that allows users to send and receive information from the server
 	4. create 'index.js' / 'app.js' file to set up the chatbot(?) server
 	5. create ProcFile >> when server called, this file tells server where to look
+	6. commit everything to Git
+	7. create facebook page for the bot
+		Click on the dropdown next to 'Quick Help' >> Create Page >> 
