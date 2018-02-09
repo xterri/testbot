@@ -1,4 +1,4 @@
-'user strict'
+'use strict'
 
 const express		= require('express')
 const bodyParser	= require('body-parser')
@@ -10,12 +10,12 @@ const app			= express()
 app.set('port', (process.env.PORT || 5000))
 
 // process data 
-app.use(bodyParser.urlencoded({extended:false}))
+app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 
 // set routes >> tells us what each part of the code does
 app.get('/', function(req, res) {
-	res.send('Chatbot set')
+	res.send('Hi I am a chatbot')
 })
 
 // page access token
@@ -33,7 +33,7 @@ app.get('/webhook/', function(req, res) {
 
 app.post('/webhook/', function(req, res) {
 	let messaging_events = req.body.entry[0].messaging
-	for (let i = 0; i = messaging_events.length; i++) {
+	for (let i = 0; i < messaging_events.length; i++) {
 		let event = messaging_events[i]
 		let sender = event.sender.id
 
