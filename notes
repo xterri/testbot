@@ -42,3 +42,4 @@ Create chatbot
 			- message_reads
 			- message_deliveries
 	18. 'Verify and Save'
+	19. Under WebHooks select page to subscribe the webhooks to
