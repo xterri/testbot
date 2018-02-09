@@ -5,6 +5,40 @@ Create chatbot
 		- install dependencies that allows users to send and receive information from the server
 	4. create 'index.js' / 'app.js' file to set up the chatbot(?) server
 	5. create ProcFile >> when server called, this file tells server where to look
-	6. commit everything to Git
-	7. create facebook page for the bot
-		Click on the dropdown next to 'Quick Help' >> Create Page >> 
+	6. create facebook page for the bot
+		Click on the dropdown next to 'Quick Help' >> Create Page (follow instructions)
+	7. go to 'developers.facebook.com' >> Sign In >> My Apps >> Add New App (set up app) 
+			(in new app) >> find and select 'Messenger' >> (on left menu) select Settings
+			>> go to Token Generation >> select page, copy token
+	8. with token go back to 'index.js' / 'app.js' and paste it to ' let token ="" '
+	9. add & commit everything to Git (DO NOT PUSH)
+	10. set remote to Heroku directory >> 'heroku create'
+		- 'heroku login' if not logged in yet
+	11. type in 'git push heroku master' in terminal << pushes code to Heroku via github (deploys it)
+			- if error about permissions type in 'heroku git-remote <file?>' 
+			- see heroku website for more info
+	12. once deploy is complete, copy url given BEFORE "remote: Verifying deploy... done."
+			- under "remote: Released v3"
+	13. open url in browser (should display message set under
+
+			app.get('/', function(req, res) {
+				res.send('Chatbot set')
+			})
+
+	14. deploy / link bot to facebook via webhook (under App Page >>  Messenger >> Settings >> Setup Webhooks)
+	15.  insert heroku link into 'Callback URL' and add "webhook" after the link
+			ex. ' https://tranquil-sea-56776.herokuapp.com/ ' >> ' https://tranquil-sea-56776.herokuapp.com/webhook '
+			- '/webhook' set in index.js
+	16. (still in Webhook) under 'Verify Token', insert token you wrote under
+
+			 app.get('/webhook/'...)
+				if (req.query['hub.verify_token'] == "<< TOKEN INSERTED HERE >>")
+				...
+
+	17. (still in webhook) under "Subscription Fields" check:
+			- messages
+			- messaging_postbacks
+			- messaging_optins
+			- message_reads
+			- message_deliveries
+	18. 'Verify and Save'
