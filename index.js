@@ -15,7 +15,7 @@ app.use(bodyParser.json())
 
 // set routes >> tells us what each part of the code does
 app.get('/', function(req, res) {
-	res.send('Hi I am a chatbot')
+	res.send("I am a bot")
 })
 
 // page access token
