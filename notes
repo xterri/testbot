@@ -1,0 +1,7 @@
+Create chatbot
+	1. make a directory & cd into it
+	2. 'npm init' (inside directory). hit enter for all questions (don't need to answer them)
+	3. install dependences >> 'npm install express request body-parser --save'
+		- install dependencies that allows users to send and receive information from the server
+	4. create 'index.js' / 'app.js' file to set up the chatbot(?) server
+	5. create ProcFile >> when server called, this file tells server where to look
