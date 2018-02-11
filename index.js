@@ -36,7 +36,7 @@ app.set('port', (process.env.PORT || 5000));
 
 // set routes >> tells us what each part of the code does
 app.get('/', function(req, res) {
-	res.send("Deplorable, I am a bot");
+	res.send("I should be using the API.ai instead now.");
 });
 
 // page access token >> can be save in an env variable on Heroku
