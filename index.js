@@ -217,7 +217,7 @@ function findMovie(userId, movieTitle) {
 				sendMessage(userId, {text: movieObj.Error});
 			}
 		} else {
-			sendMessage(userId, {text: "Something went wrong. Try again. Movie Searched: " + movieTitle});
+			sendMessage(userId, {text: "Something went wrong. Try again.\nMovie Searched: " + movieTitle});
 		}
 	});
 }
