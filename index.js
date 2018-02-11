@@ -154,46 +154,11 @@ function processMessage(event) {
 }
 
 /*
-** POST's messages back to Messenger Platform
-*/
-function sendMessage(recipientId, message) {
-	request({
-		url: "https://graph.facebook.com/v2.6/me/messages",
-		qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
-		method: "POST",
-		json: {
-			recipient: {id: recipientId},
-			message: message,
-		}
-	}, function(error, response, body) {
-		if (error) {
-			console.log("Error sending message: " + response.error);
-		}
-	});
-}
-
-/*
-** getMovieDetail >> goes intol './models/movie.js' and searches for the movie details
-*/
-function getMovieDetail(userId, field) {
-	// 'Movie' >> set variable that gives user access to db in './models/movie.js'
-	// gets an array of movie details and stores it into 'movie' var
-	Movie.findOne({user_id: user_Id}, function(err, movie) {
-		if (err) {
-			sendMessage(userId, {text: "Something went wrong. Try again later"});
-		} else {
-			// goes into the returned movie array and into the elem passed by user
-			sendMessage(userId, {text: movie[field]});
-		}
-	});
-}
-
-/*
 ** findMovie >> calls the Open Movie Database API with the following input
 */
 function findMovie(userId, movieTitle) {
-	// request API from omdapi
-	request("http://www.omdapi.com/?type=movie&amp;t=" + movieTitle, function(error, response, body) {
+	// request API from omdbapi
+	request("http://www.omdbapi.com/?type=movie&t=" + movieTitle, function (error, response, body) {
 		// if movie found
 		if (!error && response.statusCode === 200) {
 			// parsing and getting the array of details of movie
@@ -229,7 +194,7 @@ function findMovie(userId, movieTitle) {
 									elements: [{
 										title: movieObj.Title,
 										subtitle: "Is this the movie you are looking for?",
-										image_url: movieObj.Poster === "N/A" ? "https://placehold.it/350x150" : movieObj.Poster,
+										image_url: movieObj.Poster === "N/A" ? "http://placehold.it/350x150" : movieObj.Poster,
 										// option choices for the user
 										buttons: [{ 
 											type: "postback",
@@ -253,6 +218,41 @@ function findMovie(userId, movieTitle) {
 			}
 		} else {
 			sendMessage(userId, {text: "Something went wrong. Try again."});
+		}
+	});
+}
+
+/*
+** getMovieDetail >> goes intol './models/movie.js' and searches for the movie details
+*/
+function getMovieDetail(userId, field) {
+	// 'Movie' >> set variable that gives user access to db in './models/movie.js'
+	// gets an array of movie details and stores it into 'movie' var
+	Movie.findOne({user_id: userId}, function(err, movie) {
+		if (err) {
+			sendMessage(userId, {text: "Something went wrong. Try again later"});
+		} else {
+			// goes into the returned movie array and into the elem passed by user
+			sendMessage(userId, {text: movie[field]});
+		}
+	});
+}
+
+/*
+** POST's messages back to Messenger Platform
+*/
+function sendMessage(recipientId, message) {
+	request({
+		url: "https://graph.facebook.com/v2.6/me/messages",
+		qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
+		method: "POST",
+		json: {
+			recipient: {id: recipientId},
+			message: message,
+		}
+	}, function(error, response, body) {
+		if (error) {
+			console.log("Error sending message: " + response.error);
 		}
 	});
 }
