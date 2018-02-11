@@ -14,6 +14,7 @@ Create chatbot
 	9. add & commit everything to Git (DO NOT PUSH)
 	10. set remote to Heroku directory >> 'heroku create'
 		- 'heroku login' if not logged in yet
+		- this is the backend app
 	11. type in 'git push heroku master' in terminal << pushes code to Heroku via github (deploys it)
 			- if error about permissions type in 'heroku git-remote <file?>' 
 			- see heroku website for more info
@@ -42,4 +43,28 @@ Create chatbot
 			- message_reads
 			- message_deliveries
 	18. 'Verify and Save'
-	19. Under WebHooks select page to subscribe the webhooks to
+	19. Under WebHooks select page to subscribe the app to
+
+
+NOTES:
+	- Create env variables on Heroku to hold tokens and private things (security measure?)
+		- Go to Heroku Dashboard and select the app you deployed/want to add env variables to
+		- go to App's Settings >> 'Reveal Config Vars'
+		- enter "VERIFICATION_TOKEN" as the 'key' & the token (from generator) as the 'value'
+		- click Add
+	- Enable 'Get Started' button, enter the following into the terminal
+		**REPLACE "PAGE_ACCESS_TOKEN" with your token**
+		
+		curl -X POST -H "Content-Type: application/json" -d 
+		'{
+  			"setting_type":"call_to_actions",
+  			"thread_state":"new_thread",
+  			"call_to_actions":[
+    			{
+      			"payload":"Greeting"
+    			}
+  			]
+		}'
+		"https://graph.facebook.com/v2.6/me/thread_settings?access_token=PAGE_ACCESS_TOKEN"
+
+	- ^ make request to FB Graph API, if successful, 'Get Started' button should appear on welcome screen of convo. when user clicks on the button, it will trigger postback received callback and bot can respond to user.
