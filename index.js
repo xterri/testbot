@@ -32,6 +32,9 @@ app.get('/webhook/', function(req, res) {
 });
 
 // All callbacks for messenger will be POST-ed here (what our bot sends back to user)
+	// when bot interaction occurs, update sent to Webhook
+	// receive messages by listening for POST calls at webhook
+	// all callbacks made to this webhook
 app.post('/webhook/' function(req, res) {
 	// ensure this is a page subscription
 	if (req.body.object == "page") {
@@ -49,18 +52,23 @@ app.post('/webhook/' function(req, res) {
 	}
 });
 
+/*
+** postback = user has clicked a button or something configured to send a postback to bot
+*/
 function processPostback(event) {
 	var senderID = event.sender.id;
 	var payload = event.postback.payload;
 	
 	// payload = from 'call_to_actions' set in terminal after setting up "Get Started" button
+	// check to see if event was sent b/c of clicking the "Get Started" button
 	if (payload === "Greeting") {
 		// get user's name from User Profile API and include into greeting
+			// API has access to >> first name, last name, profile picture, locale, timezone, gender
 	// send request to API to get data, then function in request processes the results returns whatever  
 		request({
 			url: "https://graph.facebook.com/v2.6/" + senderId,
 			qs: {
-				access_token: process.env.token, // 'process.env.token' or is 'token' okay?
+				access_token: process.env.PAGE_ACCESS_TOKEN,
 				fields: "first_name"
 			},
 			method: "GET"
@@ -71,21 +79,35 @@ function processPostback(event) {
 			else {
 				var bodyObj = JSON.parse(body);
 				name = bodyObj.first_name;
-				greeting = "Hilo " + name + ". ";
+				greeting = "Hilo " + name + ". "; // if all goes well create personalized greeting
 			}
+			// combine greeting with message and sent to sendMessage() function
 			var message = greeting + "I am a Test Bot. I am in development / experimental mode. I will do my best to satisfy my purpose. I will not just be a \"Pass the Butter\" bot.";
 			sendMessage(senderId, {text: message}); // need to create this function
 		});
 	}
 }
 
+/*
+** POST's messages back to Messenger Platform
+*/
 function sendMessage(recipientId, message) {
 	request({
 		url: "https://graph.facebook.com/v2.6/me/message",
 		qs: {
-			access_token: process.env.token
+			access_token: process.env.PAGE_ACCESS_TOKEN
 		},
-		
+		method: "POST",
+		json: {
+			recipient: {id: recipientId},
+			message: message,
+		}
+	}, function(error, response, body) {
+		if (error)
+			console.log("Error sending message: " + response.error);	
+		}
+	});
+}
 
 /*
 // Code below returns a duplicate message up to 100 characters, from user to user

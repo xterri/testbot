@@ -1,3 +1,7 @@
+Sources:
+	- https://www.sitepoint.com/building-facebook-chat-bot-node-heroku/
+	- https://www.youtube.com/watch?v=akyyqrgOTr0`
+
 Create chatbot
 	1. make a directory & cd into it
 	2. 'npm init' (inside directory). hit enter for all questions (don't need to answer them)
@@ -68,3 +72,4 @@ NOTES:
 		"https://graph.facebook.com/v2.6/me/thread_settings?access_token=PAGE_ACCESS_TOKEN"
 
 	- ^ make request to FB Graph API, if successful, 'Get Started' button should appear on welcome screen of convo. when user clicks on the button, it will trigger postback received callback and bot can respond to user.
+	-
