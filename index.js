@@ -39,7 +39,7 @@ app.get('/', function(req, res) {
 	res.send("I should be using the API.ai instead now.");
 });
 
-// page access token >> can be save in an env variable on Heroku
+// page access token >> can be saved in an env variable on Heroku
 	// let token = "EAAEvvO6eygoBAEy5hCbIsAaeZCj1HNf3gaC4yEeieHBhjbL9GgOvjrLgBHThCFg6kZCOw4bl2g7scr0W6tk7fdX05DjZB8jZA0lbdHfUi6rA5j7wveauqMUPv30pSWjtUAWZBuOc0roL9uZCZCTgoF3UlYs0mmZBsnu5uIFvPqBBQgZDZD"; 
 
 // set route to facebook / facebook webhook >> endpoint FB uses to verify the app
@@ -144,19 +144,17 @@ function sendMessage(recipientId, message) {
 ** Processes messages to api and responds accordingly
 */
 function processMessage(event) {
-	if (!event.message.is_echo) {
-		var message = event.message.text;
-		var senderId = event.sender.id;
-		const apiaiSession = apiAiClient.textRequest(message, {sessionId: 'test_bot'});
+	var message = event.message.text;
+	var senderId = event.sender.id;
+	const apiaiSession = apiAiClient.textRequest(message, {sessionId: 'test_bot'});
 
-		apiaiSession.on('response', (response) => {
-			const result = response.result.fulfillment.speech;
-			sendMessage(senderId, result);
-		});
+	apiaiSession.on('response', (response) => {
+		const result = response.result.fulfillment.speech;
+		sendMessage(senderId, result);
+	});
 
-		apiaiSession.on('error', error => console.log(error));
-		apiaiSession.end();
-	}
+	apiaiSession.on('error', error => console.log(error));
+	apiaiSession.end();
 };
 
 
