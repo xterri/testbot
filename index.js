@@ -257,6 +257,7 @@ function findMovie(userId, movieTitle) {
 	});
 }
 
+/*
 // Code below returns a duplicate message up to 100 characters, from user to user
 app.post('/webhook/', function(req, res) {
 	let messaging_events = req.body.entry[0].messaging;
