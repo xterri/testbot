@@ -12,9 +12,9 @@ var Movie			= require("./models/movie");
 //var serviceAccount	= require("./testbot-bcd78-firebase-adminsdk-14hk8-55d666ff0b.json");
 
 // set up API connection
-// const API_AI_TOKEN = "8396018eee1346a399249d101d8008c8"; 
+const API_AI_TOKEN = "8396018eee1346a399249d101d8008c8"; 
 	// or get it from heroku env >> process.env.API_ACCESS_TOKEN
-const apiAiClient = require('apiai')(process.env.API_ACCESS_TOKEN);
+const apiAiClient = require('apiai')(API_AI_TOKEN);
 
 var app				= express();
 
@@ -27,12 +27,12 @@ admin.initializeApp({
 */
 
 // process data 
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // set port
-app.set('port', (process.env.PORT || 5000));
-//app.listen((process.env.PORT || 5000));
+//app.set('port', (process.env.PORT || 5000));
+app.listen((process.env.PORT || 5000), () => console.log('server listening on port 5000'));
 
 // set routes >> tells us what each part of the code does
 app.get('/', function(req, res) {
@@ -320,8 +320,8 @@ function sendText(sender, text) {
 			console.log("response body error");
 	});
 }
-*/
 
 app.listen(app.get('port'), function () {
 	console.log("running port");
 });
+*/
