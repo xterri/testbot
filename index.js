@@ -1,4 +1,4 @@
-'use strict'
+//'use strict'
 
 var express		= require('express');
 var bodyParser	= require('body-parser');
@@ -6,17 +6,17 @@ var request		= require('request');
 
 var app			= express();
 
-// set port
-//app.set('port', (process.env.PORT || 5000));
-app.listen((process.env.PORT || 5000));
-
 // process data 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
+// set port
+//app.set('port', (process.env.PORT || 5000));
+app.listen((process.env.PORT || 5000));
+
 // set routes >> tells us what each part of the code does
 app.get('/', function(req, res) {
-	res.send("Hilo, I am a bot");
+	res.send("Deplorable, I am a bot");
 });
 
 // page access token >> can be save in an env variable on Heroku
@@ -87,7 +87,7 @@ function processPostback(event) {
 				greeting = "Hilo " + name + ". "; // if all goes well create personalized greeting
 			}
 			// combine greeting with message and sent to sendMessage() function
-			var message = greeting + "I am a Test Bot. I am in development / experimental mode. I will do my best to satisfy my purpose. I will not just be a \"Pass the Butter\" bot.";
+			var message = greeting + "I am a Test Bot. I am in development / experimental mode. I will do my best to satisfy my purpose. I will not just be another bot.";
 			sendMessage(senderId, {text: message}); // need to create this function
 		});
 	}
