@@ -8,7 +8,7 @@ var app			= express();
 
 // set port
 //app.set('port', (process.env.PORT || 5000));
-app.listen((process.env.POSRT || 5000));
+app.listen((process.env.PORT || 5000));
 
 // process data 
 app.use(bodyParser.urlencoded({extended: false}));
