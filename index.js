@@ -1,10 +1,26 @@
 //'use strict'
 
-var express		= require('express');
-var bodyParser	= require('body-parser');
-var request		= require('request');
+var express			= require('express');
+var bodyParser		= require('body-parser');
+var request			= require('request');
 
-var app			= express();
+// set up db connection 
+var mongoose		= require("mongoose");
+var db				= mongoose.connect(process.env.MONGODB_URI);
+var Movie			= require("./models/movie");
+
+//var admin			= require("firebase-admin");
+//var serviceAccount	= require("./testbot-bcd78-firebase-adminsdk-14hk8-55d666ff0b.json");
+
+var app				= express();
+
+// set up firebase db
+/*
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://testbot-bcd78.firebaseio.com"
+});
+*/
 
 // process data 
 app.use(bodyParser.urlencoded({extended: false}));
@@ -49,6 +65,8 @@ app.post("/webhook", function (req, res) {
 			entry.messaging.forEach(function(event) {
 				if (event.postback) {
 					processPostback(event); // need to create this function
+				} else if(event.message) {
+					processMessage(event);
 				}
 			});
 		});
@@ -90,6 +108,48 @@ function processPostback(event) {
 			var message = greeting + "I am a Test Bot. I am in development / experimental mode. I will do my best to satisfy my purpose. I will not just be another bot.";
 			sendMessage(senderId, {text: message}); // need to create this function
 		});
+	// check the correct/incorrect payload messages; sees if bot found the correct movie
+	} else if (payload === "Correct") {
+		sendMessage(senderId, {text: "Great! What would you like to find out? Enter 'plot', 'date', 'runtime', 'director', 'cast', or 'rating' for the various details."});
+	} else if (payload === "Incorrect") {
+		sendMessage(senderId, {text: "Oops! Sorry! Try using the exact title of the movie"});
+	}
+}
+
+/*
+** message - handles messages from user and returns something
+*/
+function processMessage(event) {
+	// check if msg sent via echo callback (from the page)
+	// avoid processing / ignore your own messages 
+	if (!event.message.is_echo) {
+		var message = event.message;
+		var senderId = event.sender.id;
+
+		console.log("Message from senderId: " + senderId);
+		console.log("Message is: " + JSON.stringify(message));
+
+		//check if message is a text or an attachment (one or either cannot be both)
+		if (message.text) {
+			var formattedMsg = message.text.toLowerCase().trim();
+
+			// see if text/msg matches any keywords and respond with corresponding movie detail or search foew new movie
+			switch (formattedMsg) {
+				case "plot":
+				case "date":
+				case "runtime":
+				case "director":
+				case "cast":
+				case "rating":
+					getMovieDetail(senderId, formattedMsg); // create this function
+					break;
+				default: // if no keywords match formattedMsg, assume input is for movie query
+					// goes into default section
+					findMovie(senderId, formattedMsg); //create this function
+			}
+		} else if (message.attachments) { // error is it's an attachment
+			sendMessage(senderId, {text: "Sorry, I don't understand your request."});
+		}
 	}
 }
 
@@ -113,6 +173,90 @@ function sendMessage(recipientId, message) {
 }
 
 /*
+** getMovieDetail >> goes intol './models/movie.js' and searches for the movie details
+*/
+function getMovieDetail(userId, field) {
+	// 'Movie' >> set variable that gives user access to db in './models/movie.js'
+	// gets an array of movie details and stores it into 'movie' var
+	Movie.findOne({user_id: user_Id}, function(err, movie) {
+		if (err) {
+			sendMessage(userId, {text: "Something went wrong. Try again later"});
+		} else {
+			// goes into the returned movie array and into the elem passed by user
+			sendMessage(userId, {text: movie[field]});
+		}
+	});
+}
+
+/*
+** findMovie >> calls the Open Movie Database API with the following input
+*/
+function findMovie(userId, movieTitle) {
+	// request API from omdapi
+	request("http://www.omdapi.com/?type=movie&amp;t=" + movieTitle, function(error, response, body) {
+		// if movie found
+		if (!error && response.statusCode === 200) {
+			// parsing and getting the array of details of movie
+			var movieObj = JSON.parse(body);
+			if (movieObj.Response === "True") {
+				var query = {user_id: userId};
+				// put movie details into the update var to be sent to db
+				// if userId exists, update, else create new file
+				var update = {
+					user_id: userId,
+					title: movieObj.Title,
+					plot: movieObj.Plot,
+					date: movieObj.Released,
+					runtime: movieObj.Runtime,
+					director: movieObj.Director,
+					cast: movieObj.Actors,
+					rating: movieObj.imdbRating,
+					poster_url: movieObj.Poster
+				};
+				var options = {upsert: true};
+				// go into the movie db & update it with info
+				Movie.findOneAndUpdate(query, update, options, function(err, mov) {
+					if (err) {
+						console.log("Database error: " + err);
+					} else {
+						// create customized message to return to the user
+						message = {
+							attachment: {
+								type: "template",
+								payload: {
+									//button template >> sends texts and buttons
+									template_type: "generic", //template allows user to define an img, title, subtitle and buttons
+									elements: [{
+										title: movieObj.Title,
+										subtitle: "Is this the movie you are looking for?",
+										image_url: movieObj.Poster === "N/A" ? "https://placehold.it/350x150" : movieObj.Poster,
+										// option choices for the user
+										buttons: [{ 
+											type: "postback",
+											title: "Yes",
+											payload: "Correct"
+										}, {
+											type: "postback",
+											title: "No",
+											payload: "Incorrect"
+										}]
+									}]
+								}
+							}
+						};
+						sendMessage(userId, message);
+					}
+				});
+			} else {
+				console.log(movieObj.Error);
+				sendMessage(userId, {text: movieObj.Error});
+			}
+		} else {
+			sendMessage(userId, {text: "Something went wrong. Try again."});
+		}
+	});
+}
+
 // Code below returns a duplicate message up to 100 characters, from user to user
 app.post('/webhook/', function(req, res) {
 	let messaging_events = req.body.entry[0].messaging;
