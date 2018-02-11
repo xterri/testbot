@@ -15,7 +15,7 @@ app.use(bodyParser.json());
 
 // set routes >> tells us what each part of the code does
 app.get('/', function(req, res) {
-	res.send("I am a bot");
+	res.send("Hello, I am a bot");
 });
 
 // page access token >> can be save in an env variable on Heroku
@@ -25,17 +25,17 @@ app.get('/', function(req, res) {
 app.get('/webhook/', function(req, res) {
 	// verifies token >> server sends req & checks if it matches with verify_token
 	if (req.query['hub.verify_token'] === process.env.VERIFICATION_TOKEN) {
-		res.send(req.query['hub.challenge']);
-	}
-	else
+		res.send(req.query["hub.challenge"]);
+	} else {
 		res.send("wrong token");
+	}
 });
 
 // All callbacks for messenger will be POST-ed here (what our bot sends back to user)
 	// when bot interaction occurs, update sent to Webhook
 	// receive messages by listening for POST calls at webhook
 	// all callbacks made to this webhook
-app.post('/webhook/' function(req, res) {
+app.post('/webhook/', function(req, res) {
 	// ensure this is a page subscription
 	if (req.body.object == "page") {
 		// iterate over each entry; may have multiple entries if batched
