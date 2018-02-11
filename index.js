@@ -35,11 +35,11 @@ app.get('/webhook/', function(req, res) {
 	// when bot interaction occurs, update sent to Webhook
 	// receive messages by listening for POST calls at webhook
 	// all callbacks made to this webhook
-app.post("/webhook/", function(req, res) {
+app.post("/webhook", function(req, res) {
 	// ensure this is a page subscription
 	if (req.body.object == "page") {
 		// iterate over each entry; may have multiple entries if batched
-		req.body.entry.forEach(function(event) {
+		req.body.entry.forEach(function(entry) {
 			// iterate over each messaging event
 			entry.messaging.forEach(function(event) {
 				if (event.postback) {
@@ -93,7 +93,7 @@ function processPostback(event) {
 */
 function sendMessage(recipientId, message) {
 	request({
-		url: "https://graph.facebook.com/v2.6/me/message",
+		url: "https://graph.facebook.com/v2.6/me/messages",
 		qs: {
 			access_token: process.env.PAGE_ACCESS_TOKEN
 		},
@@ -103,8 +103,9 @@ function sendMessage(recipientId, message) {
 			message: message,
 		}
 	}, function(error, response, body) {
-		if (error)
+		if (error) {
 			console.log("Error sending message: " + response.error);
+		}
 	});
 }
 
