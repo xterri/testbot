@@ -11,8 +11,8 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 
 // set port
-//app.set('port', (process.env.PORT || 5000));
-app.listen((process.env.PORT || 5000));
+app.set('port', (process.env.PORT || 5000));
+//app.listen((process.env.PORT || 5000));
 
 // set routes >> tells us what each part of the code does
 app.get('/', function(req, res) {
@@ -84,7 +84,7 @@ function processPostback(event) {
 			} else {
 				var bodyObj = JSON.parse(body);
 				name = bodyObj.first_name;
-				greeting = "Hilo " + name + ". "; // if all goes well create personalized greeting
+				greeting = "Hi " + name + "! "; // if all goes well create personalized greeting
 			}
 			// combine greeting with message and sent to sendMessage() function
 			var message = greeting + "I am a Test Bot. I am in development / experimental mode. I will do my best to satisfy my purpose. I will not just be another bot.";
@@ -146,8 +146,8 @@ function sendText(sender, text) {
 			console.log("response body error");
 	});
 }
+*/
 
 app.listen(app.get('port'), function () {
 	console.log("running port");
 });
-*/
