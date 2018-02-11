@@ -1,13 +1,14 @@
 'use strict'
 
-const express		= require('express');
-const bodyParser	= require('body-parser');
-const request		= require('request');
+var express		= require('express');
+var bodyParser	= require('body-parser');
+var request		= require('request');
 
-const app			= express();
+var app			= express();
 
 // set port
-app.set('port', (process.env.PORT || 5000));
+//app.set('port', (process.env.PORT || 5000));
+app.listen((process.env.POSRT || 5000));
 
 // process data 
 app.use(bodyParser.urlencoded({extended: false}));
@@ -15,19 +16,23 @@ app.use(bodyParser.json());
 
 // set routes >> tells us what each part of the code does
 app.get('/', function(req, res) {
-	res.send("Hello, I am a bot");
+	res.send("Hilo, I am a bot");
 });
 
 // page access token >> can be save in an env variable on Heroku
 	// let token = "EAAEvvO6eygoBAEy5hCbIsAaeZCj1HNf3gaC4yEeieHBhjbL9GgOvjrLgBHThCFg6kZCOw4bl2g7scr0W6tk7fdX05DjZB8jZA0lbdHfUi6rA5j7wveauqMUPv30pSWjtUAWZBuOc0roL9uZCZCTgoF3UlYs0mmZBsnu5uIFvPqBBQgZDZD"; 
 
 // set route to facebook / facebook webhook >> endpoint FB uses to verify the app
-app.get('/webhook/', function(req, res) {
+app.get("/webhook", function(req, res) {
 	// verifies token >> server sends req & checks if it matches with verify_token
-	if (req.query['hub.verify_token'] === process.env.VERIFICATION_TOKEN) {
-		res.send(req.query["hub.challenge"]);
+	if (req.query["hub.verify_token"] === process.env.VERIFICATION_TOKEN) {
+		console.log("verified webhook");
+		res.status(200).send(req.query["hub.challenge"]);
+		//res.send(req.query["hub.challenge"]);
 	} else {
-		res.send("wrong token");
+		console.log("verification failed. tokens do not match.");
+		res.sendStatus(403);
+		//res.send("wrong token");
 	}
 });
 
@@ -35,7 +40,7 @@ app.get('/webhook/', function(req, res) {
 	// when bot interaction occurs, update sent to Webhook
 	// receive messages by listening for POST calls at webhook
 	// all callbacks made to this webhook
-app.post("/webhook", function(req, res) {
+app.post("/webhook", function (req, res) {
 	// ensure this is a page subscription
 	if (req.body.object == "page") {
 		// iterate over each entry; may have multiple entries if batched
@@ -56,7 +61,7 @@ app.post("/webhook", function(req, res) {
 ** postback = user has clicked a button or something configured to send a postback to bot
 */
 function processPostback(event) {
-	var senderID = event.sender.id;
+	var senderId = event.sender.id;
 	var payload = event.postback.payload;
 	
 	// payload = from 'call_to_actions' set in terminal after setting up "Get Started" button
@@ -94,9 +99,7 @@ function processPostback(event) {
 function sendMessage(recipientId, message) {
 	request({
 		url: "https://graph.facebook.com/v2.6/me/messages",
-		qs: {
-			access_token: process.env.PAGE_ACCESS_TOKEN
-		},
+		qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
 		method: "POST",
 		json: {
 			recipient: {id: recipientId},
@@ -143,8 +146,8 @@ function sendText(sender, text) {
 			console.log("response body error");
 	});
 }
-*/
 
 app.listen(app.get('port'), function () {
 	console.log("running port");
 });
+*/

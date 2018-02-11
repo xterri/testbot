@@ -59,17 +59,15 @@ NOTES:
 	- Enable 'Get Started' button, enter the following into the terminal
 		**REPLACE "PAGE_ACCESS_TOKEN" with your token**
 		
-		curl -X POST -H "Content-Type: application/json" -d 
-		'{
-  			"setting_type":"call_to_actions",
-  			"thread_state":"new_thread",
-  			"call_to_actions":[
-    			{
-      			"payload":"Greeting"
-    			}
-  			]
-		}'
-		"https://graph.facebook.com/v2.6/me/thread_settings?access_token=PAGE_ACCESS_TOKEN"
+curl -X POST -H "Content-Type: application/json" -d '{
+  "setting_type":"call_to_actions",
+  "thread_state":"new_thread",
+  "call_to_actions":[
+    {
+      "payload":"Greeting"
+    }
+  ]
+}' "https://graph.facebook.com/v2.6/me/thread_settings?access_token=PAGE_ACCESS_TOKEN"
 
 	- ^ make request to FB Graph API, if successful, 'Get Started' button should appear on welcome screen of convo. when user clicks on the button, it will trigger postback received callback and bot can respond to user.
 	-
