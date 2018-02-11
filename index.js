@@ -8,9 +8,13 @@ var request			= require('request');
 var mongoose		= require("mongoose");
 var db				= mongoose.connect(process.env.MONGODB_URI);
 var Movie			= require("./models/movie");
-
 //var admin			= require("firebase-admin");
 //var serviceAccount	= require("./testbot-bcd78-firebase-adminsdk-14hk8-55d666ff0b.json");
+
+// set up API connection
+// const API_AI_TOKEN = "8396018eee1346a399249d101d8008c8"; 
+	// or get it from heroku env >> process.env.API_ACCESS_TOKEN
+const apiAiClient = require('apiai')(process.env.API_ACCESS_TOKEN);
 
 var app				= express();
 
@@ -117,8 +121,49 @@ function processPostback(event) {
 }
 
 /*
-** message - handles messages from user and returns something
+** POST's messages back to Messenger Platform
 */
+function sendMessage(recipientId, message) {
+	request({
+		url: "https://graph.facebook.com/v2.6/me/messages",
+		qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
+		method: "POST",
+		json: {
+			recipient: {id: recipientId},
+			message: message,
+		}
+	}, function(error, response, body) {
+		if (error) {
+			console.log("Error sending message: " + response.error);
+		}
+	});
+}
+
+// CODE BELOW ACCESSES DATA FROM PERSONAL API
+/*
+** Processes messages to api and responds accordingly
+*/
+function processMessage(event) {
+	if (!event.message.is_echo) {
+		var message = event.message.text;
+		var senderId = event.sender.id;
+		const apiaiSession = apiAiClient.textRequest(message, {sessionId: 'test_bot'});
+
+		apiaiSession.on('response', (response) => {
+			const result = response.result.fulfillment.speech;
+			sendMessage(senderId, result);
+		});
+
+		apiaiSession.on('error', error => console.log(error));
+		apiaiSession.end();
+	}
+};
+
+
+// CODE BELOW HERE IS FOR MOVIEBOT
+/*
+** message - handles messages from user and returns something
+
 function processMessage(event) {
 	// check if msg sent via echo callback (from the page)
 	// avoid processing / ignore your own messages 
@@ -152,10 +197,11 @@ function processMessage(event) {
 		}
 	}
 }
+*/
 
 /*
 ** findMovie >> calls the Open Movie Database API with the following input
-*/
+
 function findMovie(userId, movieTitle) {
 	// request API from omdbapi
 	request("http://www.omdbapi.com/?type=movie&t=" + movieTitle, function (error, response, body) {
@@ -221,10 +267,11 @@ function findMovie(userId, movieTitle) {
 		}
 	});
 }
+*/
 
 /*
 ** getMovieDetail >> goes intol './models/movie.js' and searches for the movie details
-*/
+
 function getMovieDetail(userId, field) {
 	// 'Movie' >> set variable that gives user access to db in './models/movie.js'
 	// gets an array of movie details and stores it into 'movie' var
@@ -237,28 +284,12 @@ function getMovieDetail(userId, field) {
 		}
 	});
 }
-
-/*
-** POST's messages back to Messenger Platform
 */
-function sendMessage(recipientId, message) {
-	request({
-		url: "https://graph.facebook.com/v2.6/me/messages",
-		qs: {access_token: process.env.PAGE_ACCESS_TOKEN},
-		method: "POST",
-		json: {
-			recipient: {id: recipientId},
-			message: message,
-		}
-	}, function(error, response, body) {
-		if (error) {
-			console.log("Error sending message: " + response.error);
-		}
-	});
-}
 
-/*
+
+
 // Code below returns a duplicate message up to 100 characters, from user to user
+/*
 app.post('/webhook/', function(req, res) {
 	let messaging_events = req.body.entry[0].messaging;
 
