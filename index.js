@@ -35,7 +35,7 @@ app.get('/webhook/', function(req, res) {
 	// when bot interaction occurs, update sent to Webhook
 	// receive messages by listening for POST calls at webhook
 	// all callbacks made to this webhook
-app.post('/webhook/', function(req, res) {
+app.post("/webhook/", function(req, res) {
 	// ensure this is a page subscription
 	if (req.body.object == "page") {
 		// iterate over each entry; may have multiple entries if batched
@@ -74,9 +74,9 @@ function processPostback(event) {
 			method: "GET"
 		}, function(error, response, body) {
 			var greeting = "";
-			if (error)
+			if (error) {
 				console.log("Error getting user's name: " + error);
-			else {
+			} else {
 				var bodyObj = JSON.parse(body);
 				name = bodyObj.first_name;
 				greeting = "Hilo " + name + ". "; // if all goes well create personalized greeting
@@ -104,8 +104,7 @@ function sendMessage(recipientId, message) {
 		}
 	}, function(error, response, body) {
 		if (error)
-			console.log("Error sending message: " + response.error);	
-		}
+			console.log("Error sending message: " + response.error);
 	});
 }
 
