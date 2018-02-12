@@ -24,7 +24,7 @@ module.exports = (event) => {
 				greeting = "Hi " + name + "! ";
 			}
 			var message = greeting + "I am a Test Bot. I am in development / experimental mode. I will do my best to satisfy my purpose. I will not just be another bot.";
-			sendTextMessage(senderId, {text: message});
+			sendTextMessage(senderId, message);
 		});
 	}
 };
