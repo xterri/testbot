@@ -11,7 +11,8 @@ module.exports = (event) => {
 			url: "https://graph.facebook.com/v2.6/" + senderId,
 			qs: {
 				access_token: process.env.PAGE_ACCESS_TOKEN,
-				fields: "first_name"
+				fields: "first_name",
+				fields: "languages"
 			},
 			method: "GET"
 		}, function(error, response, body) {
@@ -21,7 +22,8 @@ module.exports = (event) => {
 			} else {
 				var bodyObj = JSON.parse(body);
 				name = bodyObj.first_name;
-				greeting = "Hi " + name + "! ";
+				lang = bodyObj.locale;
+				greeting = "Hi " + name + " . " + lang + "! ";
 			}
 			var message = greeting + "I am a Test Bot. I am in development / experimental mode. I will do my best to satisfy my purpose. I will not just be another bot.";
 			sendTextMessage(senderId, message);
