@@ -9,6 +9,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.listen(process.env.PORT || 3000, () => console.log("Server listening on port 3000"));
 
+const verificationController = require('./controllers/verification');
+const messageWebhookController = require('./controllers/messageWebhook');
+
 app.get('/', function(req, res) {
 	res.send("New bot. who dis?");
 });
+
+app.get('/webhook', verificationController);
+app.post('/webhook', messageWebhookController);
+
+
