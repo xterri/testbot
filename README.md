@@ -32,4 +32,4 @@ To test the bot, please message me the Facebook account you would like me to add
 * [CodeGeekLuke - How to create a Chatbot for Facebook Messenger](https://www.youtube.com/watch?v=akyyqrgOTr0)
 * [SitePoint - Building a Facebook Chat Bot with Node and Heroku](https://www.sitepoint.com/building-facebook-chat-bot-node-heroku/)
 * [Medium - How To Create Your Very Own Facebook Messenger Bot with Dialogflow and Node.js In Just One Day](https://medium.com/crowdbotics/how-to-create-your-very-own-facebook-messenger-bot-with-dialogflow-and-node-js-in-just-one-day-f5f2f5792be5)
-
+* [Build an App for the Google Assistant with Firebase and Dialogflow](https://codelabs.developers.google.com/codelabs/assistant-codelab/index.html?index=..%2F..%2Findex#0)
