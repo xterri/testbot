@@ -1,4 +1,5 @@
 const request = require('request');
+
 const sendTextMessage = require('./sendTextMessage');
 
 module.exports = (event) => {
