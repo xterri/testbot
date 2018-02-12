@@ -1,6 +1,7 @@
 Sources:
 	- https://www.sitepoint.com/building-facebook-chat-bot-node-heroku/
 	- https://www.youtube.com/watch?v=akyyqrgOTr0`
+	- https://medium.com/crowdbotics/how-to-create-your-very-own-facebook-messenger-bot-with-dialogflow-and-node-js-in-just-one-day-f5f2f5792be5
 
 Create chatbot
 	1. make a directory & cd into it

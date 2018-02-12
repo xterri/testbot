@@ -1,0 +1,8 @@
+Source: https://medium.com/crowdbotics/how-to-create-your-very-own-facebook-messenger-bot-with-dialogflow-and-node-js-in-just-one-day-f5f2f5792be5
+
+NOTES for crowdbotics
+- use 2 endpoints 
+    - one for Facebook initial verification 
+    - two for handling other messages from Facebook
+- separate code into 2 folder (controllers / helpers)
+    - separate endpoints = function in separate file in controllers folder
