@@ -1,6 +1,7 @@
 /*
 ** POSTBACK >> user has clicked a button or something configured to send a postback to bot
 */
+const request = require('request');
 
 module.exports = (event) => {
 	var senderId = event.sender.id;
@@ -27,4 +28,4 @@ module.exports = (event) => {
 			sendMessage(senderId, {text: message});
 		});
 	}
-}
+};
