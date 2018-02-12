@@ -13,7 +13,7 @@ const verificationController = require('./controllers/verification');
 const messageWebhookController = require('./controllers/messageWebhook');
 
 app.get('/', function(req, res) {
-	res.send("New bot. who dis?");
+	res.send("New bot. who dis?\n\n" + req.body);
 });
 
 app.get('/webhook', verificationController);
