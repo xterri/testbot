@@ -7,7 +7,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.set('port', process.env.PORT || 3000);
 
-app.listen(app.get('port'), () => console.log("Server listening on port " + app.get('port'));
+app.listen(app.get('port'), () => console.log("Server listening on port " + app.get('port')));
 
 const verificationController = require('./controllers/verification');
 const messageWebhookController = require('./controllers/messageWebhook');
