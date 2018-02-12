@@ -1,20 +1,7 @@
 const API_AI_TOKEN = process.env.API_ACCESS_TOKEN;
 const apiAiClient = require('apiai')(API_AI_TOKEN);
 
-const FACEBOOK_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
-const request = require('request');
-
-const sendTextMessage = (senderId, text) => {
-    request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: { access_token: FACEBOOK_ACCESS_TOKEN },
-        method: 'POST',
-        json: {
-            recipient: { id: senderId },
-            message: { text }
-        }
-    });
-};
+const sendTextMessage = require('./sendTextMessage');
 
 module.exports = (event) => {
     // takes message recieved and returns proper response

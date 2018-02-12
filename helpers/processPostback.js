@@ -1,11 +1,9 @@
-/*
-** POSTBACK >> user has clicked a button or something configured to send a postback to bot
-*/
 const request = require('request');
+const sendTextMessage = require('./sendTextMessage');
 
 module.exports = (event) => {
-	var senderId = event.sender.id;
-	var payload = event.postback.payload;
+	const senderId = event.sender.id;
+	const payload = event.postback.payload;
 	
 	if (payload === "Greeting") {
 		request({
@@ -25,7 +23,7 @@ module.exports = (event) => {
 				greeting = "Hi " + name + "! ";
 			}
 			var message = greeting + "I am a Test Bot. I am in development / experimental mode. I will do my best to satisfy my purpose. I will not just be another bot.";
-			sendMessage(senderId, {text: message});
+			sendTextMessage(senderId, {text: message});
 		});
 	}
 };
