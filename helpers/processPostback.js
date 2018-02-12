@@ -12,6 +12,7 @@ module.exports = (event) => {
 			qs: {
 				access_token: process.env.PAGE_ACCESS_TOKEN,
 				fields: "first_name, locale"
+				// get 'locale' / language of user, add 'locale' in fields
 			},
 			method: "GET"
 		}, function(error, response, body) {
@@ -21,8 +22,8 @@ module.exports = (event) => {
 			} else {
 				var bodyObj = JSON.parse(body);
 				name = bodyObj.first_name;
-				lang = bodyObj.locale;
-				greeting = "Hi " + name + " . " + lang + "! ";
+				//lang = bodyObj.locale;
+				greeting = "Hi " + name + "! ";
 			}
 			var message = greeting + "I am a Test Bot. I am in development / experimental mode. I will do my best to satisfy my purpose. I will not just be another bot.";
 			sendTextMessage(senderId, message);
