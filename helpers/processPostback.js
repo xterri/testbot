@@ -11,8 +11,7 @@ module.exports = (event) => {
 			url: "https://graph.facebook.com/v2.6/" + senderId,
 			qs: {
 				access_token: process.env.PAGE_ACCESS_TOKEN,
-				fields: "first_name",
-				fields: "languages"
+				fields: "first_name, locale"
 			},
 			method: "GET"
 		}, function(error, response, body) {
