@@ -8,8 +8,10 @@ module.exports = (event) => {
     const senderId = event.sender.id;
     const message = event.message.text;
 
+    // sends user messages to API.ai
     const apiaiSession = apiAiClient.textRequest(message, {sessionId: 'test_bot'});
 
+    // get and return response message to user
     apiaiSession.on('response', (response) => {
         const result = response.result.fulfillment.speech;
         sendTextMessage(senderId, result);
