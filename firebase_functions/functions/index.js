@@ -1,4 +1,3 @@
-
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 
@@ -26,11 +25,13 @@ exports.webhook = functions.https.onRequest((request, response) => {
         //     due: "2018-02-13"
         //     ...
         // }
-    let intentName = request.body.result.metadata.intentName;
+    // don't get intentName because it can be easily edited, use action identifier instead
+    let actionName = request.body.result.action;
     let params = request.body.result.parameters;
 
-    switch (intentName) {
-        case "homework":
+    switch (actionName) {
+        case "SaveTasks":
+            // db currently saving ALL data from ALL users, need to separate them
             // collection on fire >> see Firebase Guides >> Cloud Firestore >> Get Started
             // adds params to firebase/firestore db
             firestore.collection('tasks').add(params) 
@@ -44,16 +45,46 @@ exports.webhook = functions.https.onRequest((request, response) => {
                     });
                 })
                 // catch any errors that occur
-                .catch(e => {
+                .catch((e => {
                     console.log("error: " + e);
                     response.send({
                         speech: "Something went wrong when writing to the database"
                     });
-                })
+                }))
             break;
-        case "AreYouARobot":
+        case "ShowTasks":
+            firestore.collection('tasks').get()
+                .then((querySnapshot) => {
+                    var tasks = [];
+                    // get data from db and store array into tasks var
+                    querySnapshot.forEach((doc) => { tasks.push(doc.data()) });
+                    // tasks returned look like >> [ {...}, {...}, {...} ]
+                    
+                    // convert array to speech
+                    var speech = `You have ${tasks.length} task(s) to do.\n`;
+                    tasks.forEach((eachTask, index) => {
+                        speech += `${index + 1}) Your ${eachTask.subject} homework is due ${eachTask.due}.\n`
+                    })
+                    
+                    response.send({
+                        speech: speech
+                    });
+                })
+                .catch((err) => {
+                    console.log("Error getting documents from db", err);
+                    response.send({
+                        speech: "An error occured while retrieving information from the database"
+                    })
+                });
+            break;
+        case "Robot":
             response.send({
                 speech: "I am Bot I am."
+            });
+            break;
+        case "AboutPurpose":
+            response.send({
+                speech: "I pass the butter"
             });
             break;
         default:
