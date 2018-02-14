@@ -14,6 +14,7 @@ module.exports = (event) => {
     // get and return response message to user
     apiaiSession.on('response', (response) => {
         const result = response.result.fulfillment.speech;
+        console.log(result);
         sendTextMessage(senderId, result);
     });
 

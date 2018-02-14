@@ -1,4 +1,4 @@
-//const processMessage = require('../helpers/processMessage');
+const processMessage = require('../helpers/processMessage');
 const processPostback = require('../helpers/processPostback');
 
 // gets the info / messages from the user and sends to 'processMessage' function
