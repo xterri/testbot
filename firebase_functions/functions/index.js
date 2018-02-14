@@ -27,14 +27,19 @@ exports.webhook = functions.https.onRequest((request, response) => {
         // }
     // don't get intentName because it can be easily edited, use action identifier instead
     let actionName = request.body.result.action;
-    let params = request.body.result.parameters;
+    let userId = request.body.sessionId; 
 
     switch (actionName) {
         case "SaveTasks":
+            let params = request.body.result.parameters;
+            let saveToDb = {
+                due: params.due,
+                subject: params.subject
+            };
             // db currently saving ALL data from ALL users, need to separate them
             // collection on fire >> see Firebase Guides >> Cloud Firestore >> Get Started
             // adds params to firebase/firestore db
-            firestore.collection('tasks').add(params) 
+            firestore.collection('tasks').add(saveToDb) 
                 // params >> {subject: "math", due: "2018-02-11"}
                     // adding the param object
                 .then(() => {
@@ -54,20 +59,28 @@ exports.webhook = functions.https.onRequest((request, response) => {
             break;
         case "ShowTasks":
             firestore.collection('tasks').get()
+                // "querySnapshot" = an iteration (doesn't return / have data)
                 .then((querySnapshot) => {
                     var tasks = [];
+                    var index = 0;
                     // get data from db and store array into tasks var
                     querySnapshot.forEach((doc) => { tasks.push(doc.data()) });
                     // tasks returned look like >> [ {...}, {...}, {...} ]
-                    
+
                     // convert array to speech
-                    var speech = `You have ${tasks.length} task(s) to do.\n`;
-                    tasks.forEach((eachTask, index) => {
-                        speech += `${index + 1}) Your ${eachTask.subject} homework is due ${eachTask.due}.\n`
-                    })
-                    
+                    var speech = "";
+
+                    tasks.forEach((eachTask) => {
+                        if (eachTask.id === userId) {
+                            // get each object stored into "eachTask", and an index val starting at 0
+                            speech += `${index + 1}) Your ${eachTask.subject} homework is due ${eachTask.due}.\n`
+                            index++;
+                        }
+                    });
+                    if (!speech)
+                        speech += "Please add some tasks to the list."
                     response.send({
-                        speech: speech
+                        speech: `You have ${index} task(s) to do.\n\n` + speech
                     });
                 })
                 .catch((err) => {
