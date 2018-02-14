@@ -33,6 +33,7 @@ exports.webhook = functions.https.onRequest((request, response) => {
         case "SaveTasks":
             let params = request.body.result.parameters;
             let saveToDb = {
+                id: userId,
                 due: params.due,
                 subject: params.subject
             };
