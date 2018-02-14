@@ -9,7 +9,8 @@ module.exports = (event) => {
     const message = event.message.text;
 
     // sends user messages to API.ai
-    const apiaiSession = apiAiClient.textRequest(message, {sessionId: 'test_bot'});
+    // will need to change "sessionId" to identify other users
+    const apiaiSession = apiAiClient.textRequest(message, {sessionId: sendId});
 
     // get and return response message to user
     apiaiSession.on('response', (response) => {
