@@ -58,6 +58,32 @@ exports.webhook = functions.https.onRequest((request, response) => {
                     });
                 }))
             break;
+        case "countTasks":
+            firestore.collection('tasks').get()
+                // "querySnapshot" = an iteration (doesn't return / have data)
+                .then((querySnapshot) => {
+                    var tasks = [];
+                    var index = 0;
+                    // get data from db and store array into tasks var
+                    querySnapshot.forEach((doc) => { tasks.push(doc.data()) });
+                    // tasks returned look like >> [ {...}, {...}, {...} ]
+                    tasks.forEach((eachTask) => {
+                        if (eachTask.id === userId)
+                            index++;
+                    });
+                    var speech = `You have ${index} task(s). `;
+                    speech += index ? "Would you like to see them?" : "";
+                    response.send({
+                        speech: speech
+                    });
+                })
+                .catch((err) => {
+                    console.log("Error getting documents from db", err);
+                    response.send({
+                        speech: "An error occured while retrieving information from the database"
+                    })
+                });
+            break;
         case "ShowTasks":
             firestore.collection('tasks').get()
                 // "querySnapshot" = an iteration (doesn't return / have data)
@@ -81,7 +107,7 @@ exports.webhook = functions.https.onRequest((request, response) => {
                     if (!speech)
                         speech += "Please add some tasks to the list."
                     response.send({
-                        speech: `You have ${index} task(s) to do.\n\n` + speech
+                        speech: speech
                     });
                 })
                 .catch((err) => {
