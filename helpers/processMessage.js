@@ -5,6 +5,7 @@ const sendTextMessage = require('./sendTextMessage');
 
 module.exports = (event) => {
     if (!event.message.is_echo) {
+
         // takes message recieved and returns proper response
         const senderId = event.sender.id;
         const message = event.message.text;
